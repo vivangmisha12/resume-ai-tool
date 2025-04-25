@@ -1,11 +1,12 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Toaster, toast } from 'react-hot-toast'
 import { X } from 'lucide-react'
+import axios from 'axios'
 
-export default function Upload() {
+export default function Dashboard() {
   const [file, setFile] = useState(null)
   const [fileType, setFileType] = useState('pdf')
-  const fileInputRef = useRef(null) // 👈 add a ref
+  const fileInputRef = useRef(null)
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]
@@ -23,7 +24,7 @@ export default function Upload() {
     toast.error(`❌ File "${file.name}" removed.`)
     setFile(null)
     if (fileInputRef.current) {
-      fileInputRef.current.value = null // 👈 reset input field
+      fileInputRef.current.value = null
     }
   }
 
@@ -39,7 +40,6 @@ export default function Upload() {
         <h2 className="text-4xl font-extrabold mb-4">Upload Your Resume</h2>
         <p className="text-lg text-white/80 mb-6">Choose the file type you'd like to upload:</p>
 
-        {/* File type + Remove file in same row */}
         <div className="flex items-center gap-4 mb-6">
           <button
             onClick={() => setFileType('pdf')}
@@ -68,10 +68,9 @@ export default function Upload() {
           )}
         </div>
 
-        {/* File input */}
         <div className="flex items-center gap-4 mb-4">
           <input
-            ref={fileInputRef} // 👈 attach the ref here
+            ref={fileInputRef}
             type="file"
             accept={fileType === 'pdf' ? '.pdf' : '.doc,.docx'}
             onChange={handleFileChange}
@@ -79,14 +78,12 @@ export default function Upload() {
           />
         </div>
 
-        {/* File preview */}
         {file && (
           <div className="mt-2 bg-white text-black px-4 py-2 rounded-md shadow-md max-w-xs w-full truncate text-sm font-medium">
             {file.name}
           </div>
         )}
 
-        {/* Upload button */}
         <button
           onClick={handleUpload}
           disabled={!file}

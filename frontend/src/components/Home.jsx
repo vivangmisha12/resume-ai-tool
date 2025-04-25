@@ -12,7 +12,7 @@ const Home = () => {
           <Link to="/about" className="hover:text-yellow-300 transition">About</Link>
           <Link to="/contact" className="hover:text-yellow-300 transition">Contact</Link> */}
           <Link
-  to="/auth"
+  to="/user/auth/login"
   className="bg-yellow-400 text-black px-3 py-1.5 rounded-md text-sm font-medium hover:bg-yellow-300 transition"
 >
   Sign In
@@ -31,7 +31,7 @@ const Home = () => {
           and tailored recommendations using our smart AI engine.
         </p>
         <Link
-          to="/Auth"
+          to="/user/auth/login"
           className="bg-green-500 px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-400 transition"
         >
           Analyze My Resume

@@ -1,20 +1,44 @@
-import React from 'react'; 
-import Home from './components/Home'
-import Auth from './components/Auth';
-import Upload from './components/Upload';
-import { Routes, Route } from 'react-router-dom'; 
-// import {Toaster} from 'react-hot-toast'
+// src/App.jsx
+import React, { useEffect } from 'react';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Provider } from 'react-redux';
+import store from './redux/store';
+import { loadUser } from './redux/actions/user';
+
+import Register from './pages/Register';
+import Login from './pages/Login';
+import Test from './components/test';
+import ProtectedRoute from './utils/ProtectedRoutes';
+import Home from './components/Home';
+import Dashboard from './components/Dashboard';
+
+const AppRoutes = () => {
+  const dispatch = useDispatch();
+  const { loading } = useSelector(state => state.user);
+
+  useEffect(() => {
+    dispatch(loadUser());
+  }, [dispatch]);
+
+  if (loading) return <div className="min-h-screen flex justify-center items-center">Checking login...</div>;
+
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/test" element={<ProtectedRoute><Test /></ProtectedRoute>} />
+      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+    </Routes>
+  );
+};
 
 const App = () => {
   return (
-    
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/auth" element={<Auth/>} />
-      <Route path="/upload" element={<Upload/>} />
-
-
-    </Routes>
+    <Provider store={store}>
+      <AppRoutes />
+    </Provider>
   );
 };
 

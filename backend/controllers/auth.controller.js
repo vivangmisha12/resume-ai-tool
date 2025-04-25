@@ -107,6 +107,7 @@ const login = async (req, res, next) => {
 
 const getUser = async(req, res, next) => {
     try {
+        // console.log(req.user);
         const user = await userModel.findById(req.user._id).select("-password -__v");
         if (!user) {
             return res.status(404).json({
@@ -114,6 +115,7 @@ const getUser = async(req, res, next) => {
                 success: false
             });
         }
+        console.log("yy",user);
         res.status(200).json({
             message: "User fetched successfully",
             success: true,
@@ -124,4 +126,33 @@ const getUser = async(req, res, next) => {
     }
 }
 
-module.exports = { register, login, refresh, getUser };
+const logout = async (req, res) => {
+    try {
+        res.cookie("accessToken", "", {
+            httpOnly: true,
+            expires: new Date(0),
+            sameSite: "none",
+            secure: true,
+        });
+
+        res.cookie("refreshToken", "", {
+            httpOnly: true,
+            expires: new Date(0),
+            sameSite: "none",
+            secure: true,
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Logged out successfully",
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Logout failed",
+        });
+    }
+};
+
+
+module.exports = { register, login, refresh, getUser, logout };
