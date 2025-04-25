@@ -23,16 +23,22 @@ const userSchema = new mongoose.Schema({
   },
   resumes: [
     {
-      filename: String,
-      contentType: String,
-      fileBuffer: Buffer,
+      fileid: String,
+      education: String,
+      experience: String,
+      skills: String,
+      certifications: String,
+      projects: String,
+      achievements: String,
+      summary: String,
       uploadedAt: {
         type: Date,
         default: Date.now
       },
       matchingScore: Number,
       skillGapAnalysis: String,
-      sectionWiseAnalysis: String
+      sectionWiseAnalysis: String,
+      overallAnalysis: String
     }
   ],
 }, { timestamps: true });
