@@ -12,6 +12,7 @@ import Test from './components/test';
 import ProtectedRoute from './utils/ProtectedRoutes';
 import Home from './components/Home';
 import Dashboard from './components/Dashboard';
+import Result from './pages/Result';
 
 const AppRoutes = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ const AppRoutes = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/test" element={<ProtectedRoute><Test /></ProtectedRoute>} />
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      <Route path="/Result" element={<ProtectedRoute><Result /></ProtectedRoute>} />
     </Routes>
   );
 };

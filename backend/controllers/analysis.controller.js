@@ -168,7 +168,7 @@ exports.resumeAnalysis = async (req, res) => {
     console.log("File:", req.file);
 
     console.log("Job Description:", jobDescription);
-    console.log("Uploaded File:", file); // 👈 should not be undefined!
+    console.log("Uploaded File:", file); // Debugging log
 
     if (!file || !jobDescription) {
       return res.status(400).json({ message: "Resume file and job description are required." });

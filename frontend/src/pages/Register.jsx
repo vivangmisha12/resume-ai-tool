@@ -3,6 +3,9 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate,Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
+
+
 
 const Register = () => {
   const navigate = useNavigate();
@@ -12,6 +15,15 @@ const Register = () => {
     password: '',
     confirmPassword: '',
   });
+
+
+  const userState = useSelector((state) => state.user);
+  
+  const { user, isAuthenticated, loading } = userState;
+
+  if (isAuthenticated) {
+    navigate('/'); // Redirect to test page if already authenticated
+  }
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -84,7 +96,7 @@ const Register = () => {
           </form>
           <p className="mt-4 text-sm text-center text-gray-400">
             Already have an account?{' '}
-            <Link to="/user/auth/login" className="text-blue-400 underline hover:text-blue-300">
+            <Link to="/login" className="text-blue-400 underline hover:text-blue-300">
               Login
             </Link>
           </p>

@@ -1,22 +1,62 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom'
+import { logout } from '../redux/actions/user';
+import { toast, ToastContainer } from 'react-toastify';
 
 const Home = () => {
+
+  const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const userState = useSelector((state) => state.user);
+    const { user, isAuthenticated, loading } = userState;
+    
+
+    // Inside the Home component
+
+const handleAnalyzeClick = () => {
+  if (isAuthenticated) {
+    navigate('/dashboard');
+  } else {
+    navigate('/login');
+  }
+
+  // navigate("/login")
+}
+
+const handleLogout = async () => {
+  await dispatch(logout());
+  toast.success('Logout successful!');
+  navigate('/');
+};
+
+
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-yellow-500 text-white flex flex-col">
       {/* Navbar */}
       <nav className="bg-blue-950 bg-opacity-80 px-8 py-4 flex justify-between items-center shadow-md sticky top-0 z-50">
-        <h1 className="text-3xl font-extrabold tracking-wide text-yellow-400" to="/">Res-You-me</h1>
+        <h1 className="text-3xl font-extrabold tracking-wide text-yellow-400 cursor-pointer" to="/">Res-You-me</h1>
         <div className="space-x-6 text-lg font-medium">
           {/* <Link to="/" className="hover:text-yellow-300 transition">Home</Link>
           <Link to="/about" className="hover:text-yellow-300 transition">About</Link>
           <Link to="/contact" className="hover:text-yellow-300 transition">Contact</Link> */}
-          <Link
-  to="/user/auth/login"
-  className="bg-yellow-400 text-black px-3 py-1.5 rounded-md text-sm font-medium hover:bg-yellow-300 transition"
->
-  Sign In
-</Link>
+          {isAuthenticated ? (
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-red-400 transition"
+            >
+              Log Out
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="bg-yellow-400 text-black px-3 py-1.5 rounded-md text-sm font-medium hover:bg-yellow-300 transition"
+            >
+              Sign In
+            </Link>
+          )}
 
         </div>
       </nav>
@@ -30,12 +70,12 @@ const Home = () => {
           Upload your resume and job description to get instant feedback, skill gap analysis,
           and tailored recommendations using our smart AI engine.
         </p>
-        <Link
-          to="/user/auth/login"
+        <button
+          onClick={handleAnalyzeClick}
           className="bg-green-500 px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-400 transition"
         >
           Analyze My Resume
-        </Link>
+        </button>
       </section>
 
       {/* Feature Section */}

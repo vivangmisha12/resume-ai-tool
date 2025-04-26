@@ -1,16 +1,28 @@
 // src/pages/Login.jsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate, Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { loadUser } from '../redux/actions/user';
 
 const Login = () => {
+
+  
   const navigate = useNavigate();
   const dispatch = useDispatch(); // Access redux dispatch
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const userState = useSelector((state) => state.user);
+  
+  const { user, isAuthenticated, loading } = userState;
+
+ 
+  
+
+  // if (isAuthenticated) {
+  //   navigate('/'); // Redirect to test page if already authenticated
+  // }
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -35,7 +47,7 @@ const Login = () => {
       dispatch(loadUser());
 
       toast.success('✅ Login successful!');
-      navigate('/test'); // Navigate to the test page after successful login
+      navigate('/',1500); // Navigate to the test page after successful login
     } catch (error) {
       console.error(error);
       toast.error('❌ Invalid login credentials');
@@ -74,7 +86,7 @@ const Login = () => {
           </form>
           <p className="mt-4 text-sm text-center text-gray-400">
             Don’t have an account?{' '}
-            <Link to="/user/auth/register" className="text-blue-400 underline hover:text-blue-300">
+            <Link to="/register" className="text-blue-400 underline hover:text-blue-300">
               Sign up
             </Link>
           </p>
