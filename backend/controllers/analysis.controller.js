@@ -146,6 +146,7 @@ ${jobDescription}
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const responseText = response.text();
+  console.log("Raw Gemini API Response:", responseText); // Log the raw response for debugging
 
   try {
     const parsedResponse = JSON.parse(responseText);

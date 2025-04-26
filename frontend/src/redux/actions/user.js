@@ -1,4 +1,5 @@
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export const loadUser = () => async (dispatch) => {
   try {
@@ -60,6 +61,10 @@ export const logout = () => async (dispatch) => {
       localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");
+
+        
+
+        toast.success("Logout successful!");
   
       dispatch({ type: "LogoutSuccess" });
     } catch (error) {

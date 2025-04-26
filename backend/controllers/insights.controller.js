@@ -34,6 +34,7 @@ ${jobDescription}
     
     // Assuming response.text is the raw string
     const responseText = response.text || response;
+    console.log(responseText);
 
     // Try to parse the response if it's a valid JSON
     const parsedResponse = JSON.parse(responseText);

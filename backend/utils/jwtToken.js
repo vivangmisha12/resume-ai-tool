@@ -14,7 +14,7 @@ const sendToken = (user, statusCode, res) => {
         .status(statusCode)
         .cookie("accessToken", accessToken, {
             ...cookieOptions,
-            expires: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes for access token
+            expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day for access token
         })
         .cookie("refreshToken", refreshToken, {
             ...cookieOptions,

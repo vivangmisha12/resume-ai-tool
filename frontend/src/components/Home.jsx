@@ -25,9 +25,8 @@ const handleAnalyzeClick = () => {
 }
 
 const handleLogout = async () => {
-  await dispatch(logout());
+  dispatch(logout());
   toast.success('Logout successful!');
-  navigate('/');
 };
 
 
@@ -50,12 +49,13 @@ const handleLogout = async () => {
               Log Out
             </button>
           ) : (
-            <Link
-              to="/login"
+            <button
+              onClick={() => navigate('/login')}
+              
               className="bg-yellow-400 text-black px-3 py-1.5 rounded-md text-sm font-medium hover:bg-yellow-300 transition"
             >
               Sign In
-            </Link>
+            </button>
           )}
 
         </div>
