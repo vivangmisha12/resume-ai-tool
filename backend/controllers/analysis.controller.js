@@ -187,11 +187,13 @@ exports.resumeAnalysis = async (req, res) => {
       fileid,
       ...extracted,
       ...insights,
+      jobDescription,
     });
     await user.save();
 
     res.status(200).json({
-      message: "Resume analyzed and saved successfully.",
+      success: true,
+      message: "Resume uploaded successfully.",
       data: user.resumes.slice(-1)[0],
     });
   } catch (error) {

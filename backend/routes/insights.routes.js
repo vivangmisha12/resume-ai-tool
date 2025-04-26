@@ -6,6 +6,6 @@ const { generateResumeInsightsFromDb } = require("../controllers/insights.contro
 const { protect, isAuthenticated } = require("../middlewares/auth.middleware");
 
 // Route to generate insights from the last added resume
-router.post("/generate-insights", isAuthenticated, generateResumeInsightsFromDb);
+router.get("/generate-insights", isAuthenticated, generateResumeInsightsFromDb);
 
 module.exports = router;

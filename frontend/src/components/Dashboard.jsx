@@ -10,6 +10,7 @@ export default function Dashboard() {
   const fileInputRef = useRef(null)
   const [description, setDescription] = useState('')
   const navigate = useNavigate()
+  const [isUploaded, setIsUploaded] = useState(false);
 
   const redirectToHome = () => {
     navigate('/')
@@ -43,6 +44,10 @@ export default function Dashboard() {
         },
         withCredentials: true 
       })
+
+      if (response.data.success) {
+        setIsUploaded(true);
+      }
   
       toast.success(`${response.data.message}`)
     } catch (error) {
@@ -57,6 +62,10 @@ export default function Dashboard() {
     if (fileInputRef.current) {
       fileInputRef.current.value = null
     }
+  }
+
+  const handleGenerate = async () => {
+    navigate('/result')
   }
 
   return (
@@ -135,8 +144,19 @@ export default function Dashboard() {
             file ? 'bg-green-500 hover:bg-green-400 text-white' : 'bg-gray-400 text-white cursor-not-allowed'
           }`}
         >
-          Analyse Resume 
+          Upload Resume 
         </button>
+        {isUploaded && (
+          <button
+            onClick={handleGenerate}
+            disabled={!file}
+            className={`mt-6 px-6 py-2 rounded-md font-semibold transition ${
+              file ? 'bg-green-500 hover:bg-green-400 text-white' : 'bg-gray-400 text-white cursor-not-allowed'
+            }`}
+          >
+            Generate Resume Analysis using AI
+          </button>
+        )}
       </div>
     </div>
   )

@@ -31,16 +31,28 @@ const userSchema = new mongoose.Schema({
       projects: String,
       achievements: String,
       summary: String,
+      jobDescription: String,
       uploadedAt: {
         type: Date,
         default: Date.now
       },
       matchingScore: Number,
-      skillGapAnalysis: String,
-      sectionWiseAnalysis: String,
+      skillGapAnalysis: {
+        missingSkills: [String],
+        partiallyMatchingSkills: [String],
+        strongMatchingSkills: [String]
+      },
+      sectionWiseAnalysis: {
+        Education: String,
+        Experience: String,
+        Skills: String,
+        Projects: String,
+        Certifications: String,
+        Achievements: String
+      },
       overallAnalysis: String
     }
-  ],
+  ],  
 }, { timestamps: true });
 
 // hash password

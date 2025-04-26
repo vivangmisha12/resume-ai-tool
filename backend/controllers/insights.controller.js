@@ -1,5 +1,3 @@
-// analysis.controller.js
-
 const User = require("../models/user.model");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
@@ -11,13 +9,14 @@ const generateResumeInsights = async (resumeData, jobDescription) => {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const prompt = `
-Given the resume and job description below, generate the following:
+Given the resume and job description below, generate the following fields:
+
 - matchingScore (number between 0 and 100)
 - skillGapAnalysis
 - sectionWiseAnalysis
 - overallAnalysis
 
-Return the result in JSON format.
+⚡ VERY IMPORTANT: Only return pure JSON. Do not wrap the output inside \`\`\`json or \`\`\`. No explanations, no formatting.
 
 Resume:
 ${resumeData}
@@ -30,18 +29,31 @@ ${jobDescription}
   const response = result.response;
 
   try {
-    console.log("Raw Gemini API Response:", response); // Log the raw response for debugging
-    
-    // Assuming response.text is the raw string
-    const responseText = response.text || response;
-    console.log(responseText);
+    let textContent = response.candidates?.[0]?.content?.parts?.[0]?.text;
 
-    // Try to parse the response if it's a valid JSON
-    const parsedResponse = JSON.parse(responseText);
+    console.log("Extracted Gemini Response Text:", textContent);
+
+    if (!textContent) {
+      throw new Error("No text content found in Gemini response.");
+    }
+
+    // 🛠️ Clean the response if it accidentally wrapped in markdown
+    textContent = textContent.trim();
+    if (textContent.startsWith("```json")) {
+      textContent = textContent.replace(/^```json/, "").trim();
+    }
+    if (textContent.startsWith("```")) {
+      textContent = textContent.replace(/^```/, "").trim();
+    }
+    if (textContent.endsWith("```")) {
+      textContent = textContent.slice(0, -3).trim();
+    }
+
+    const parsedResponse = JSON.parse(textContent);
     return parsedResponse;
   } catch (error) {
     console.error("Error parsing Gemini response:", error);
-    return { rawResponse: response.text || response }; // Return raw response if parsing fails
+    return null; // Return null if parsing fails
   }
 };
 
@@ -58,7 +70,7 @@ exports.generateResumeInsightsFromDb = async (req, res) => {
       return res.status(400).json({ message: "No resume data found for this user." });
     }
 
-    const jobDescription = req.body.jobDescription;
+    const jobDescription = latestResume.jobDescription;
     if (!jobDescription) {
       return res.status(400).json({ message: "Job description is required." });
     }
@@ -76,17 +88,30 @@ Summary: ${latestResume.summary}
     // Get insights using Gemini
     const insights = await generateResumeInsights(resumeData, jobDescription);
 
-    // If the response is empty or malformed
-    if (!insights || !insights.matchingScore || !insights.skillGapAnalysis || !insights.sectionWiseAnalysis || !insights.overallAnalysis) {
-      return res.status(500).json({ message: "Invalid response from Gemini API.", insights });
+    if (!insights) {
+      return res.status(500).json({ message: "Failed to generate insights from Gemini API." });
     }
 
-    // Update the resume data with the new insights
-    latestResume.matchingScore = insights.matchingScore;
-    latestResume.skillGapAnalysis = insights.skillGapAnalysis;
-    latestResume.sectionWiseAnalysis = insights.sectionWiseAnalysis;
-    latestResume.overallAnalysis = insights.overallAnalysis;
+    console.log("dhanush", insights.skillGapAnalysis);
 
+    // Save the insights into the respective fields in resume
+    latestResume.matchingScore = insights.matchingScore;
+    latestResume.skillGapAnalysis = {
+      missingSkills: insights.skillGapAnalysis.missingSkills || [],
+      partiallyMatchingSkills: insights.skillGapAnalysis.partiallyMatchingSkills || [],
+      strongMatchingSkills: insights.skillGapAnalysis.strongMatchingSkills || []
+    };
+    latestResume.sectionWiseAnalysis = {
+      Education: insights.sectionWiseAnalysis.Education || "",
+      Experience: insights.sectionWiseAnalysis.Experience || "",
+      Skills: insights.sectionWiseAnalysis.Skills || "",
+      Projects: insights.sectionWiseAnalysis.Projects || "",
+      Certifications: insights.sectionWiseAnalysis.Certifications || "",
+      Achievements: insights.sectionWiseAnalysis.Achievements || ""
+    };
+    latestResume.overallAnalysis = insights.overallAnalysis;    
+
+    console.log("hello world", latestResume);
     // Save updated resume
     await user.save();
 
