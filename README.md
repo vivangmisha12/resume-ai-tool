@@ -100,10 +100,8 @@ npm run dev
 ---
 
 ## 🌐 Live Demo
-
-> _[Add your deployment link if available]_  
-Example: [View Live 1 - Vercel](https://dhanushk-adya-ai.vercel.app)
-        [View Live 2 - AWS](http://18.204.106.61/)
+ [View Live 1 - AWS](http://18.204.106.61/)  
+ [View Live 2 - Vercel](https://dhanushk-adya-ai.vercel.app)  
 
 ---
 
