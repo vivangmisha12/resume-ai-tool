@@ -55,8 +55,9 @@ const refresh = async (req, res) => {
         // Optional: Set the new access token in the cookie as well
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
-            sameSite: "none",
+            sameSite: 'Strict',
             secure: true,
+            maxAge: 3600000,
             expires: new Date(Date.now() + 5 * 60 * 1000), // 5 min
         });
 
@@ -131,14 +132,16 @@ const logout = async (req, res) => {
         res.cookie("accessToken", "", {
             httpOnly: true,
             expires: new Date(0),
-            sameSite: "none",
+            sameSite: 'Strict',
+            maxAge: 3600000,
             secure: true,
         });
 
         res.cookie("refreshToken", "", {
             httpOnly: true,
             expires: new Date(0),
-            sameSite: "none",
+            sameSite: 'Strict',
+            maxAge: 3600000,
             secure: true,
         });
 
