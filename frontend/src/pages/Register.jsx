@@ -1,11 +1,10 @@
+// src/pages/Register.jsx
 import { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
-import { useNavigate,Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-
-
 
 const Register = () => {
   const navigate = useNavigate();
@@ -16,13 +15,11 @@ const Register = () => {
     confirmPassword: '',
   });
 
-
   const userState = useSelector((state) => state.user);
-  
   const { user, isAuthenticated, loading } = userState;
 
   if (isAuthenticated) {
-    navigate('/'); // Redirect to test page if already authenticated
+    navigate('/');
   }
 
   const handleChange = (e) => {
@@ -42,6 +39,7 @@ const Register = () => {
       toast.success('✅ Signup successful!');
       setTimeout(() => navigate('/login'), 1000);
     } catch (error) {
+      console.error(error);
       toast.error('❌ Signup failed');
     }
   };
@@ -49,18 +47,29 @@ const Register = () => {
   return (
     <>
       <ToastContainer position="top-center" />
-      <h1 className="text-3xl font-bold text-center mt-6 text-white">Resume Analyzer AI</h1>
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-        <div className="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md">
-          <h2 className="text-3xl font-bold mb-6 text-center">Sign Up to Resume Analyzer</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
+      
+      {/* Light background */}
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-4">
+        
+        {/* Title */}
+        <h1 className="text-4xl font-bold text-center text-purple-700 mb-10">
+          Resume Analyzer AI
+        </h1>
+
+        {/* White card */}
+        <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+          <h2 className="text-2xl font-bold mb-6 text-center text-purple-600">
+            Sign Up for Resume Analyzer
+          </h2>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
             <input
               type="text"
               name="name"
               placeholder="Full Name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded-md bg-gray-100 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             />
             <input
@@ -69,7 +78,7 @@ const Register = () => {
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded-md bg-gray-100 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             />
             <input
@@ -78,7 +87,7 @@ const Register = () => {
               placeholder="Password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded-md bg-gray-100 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             />
             <input
@@ -87,16 +96,21 @@ const Register = () => {
               placeholder="Confirm Password"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded-md bg-gray-100 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             />
-            <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded-md font-semibold transition">
+
+            <button
+              type="submit"
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-md font-semibold transition"
+            >
               Sign Up
             </button>
           </form>
-          <p className="mt-4 text-sm text-center text-gray-400">
+
+          <p className="mt-6 text-sm text-center text-gray-500">
             Already have an account?{' '}
-            <Link to="/login" className="text-blue-400 underline hover:text-blue-300">
+            <Link to="/login" className="text-purple-600 font-medium hover:underline">
               Login
             </Link>
           </p>

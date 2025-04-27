@@ -1,163 +1,207 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Toaster, toast } from 'react-hot-toast'
-import { X } from 'lucide-react'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import Header from '../layouts/Header';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { FaTimes } from 'react-icons/fa';
 
-export default function Dashboard() {
-  const [file, setFile] = useState(null)
-  const [fileType, setFileType] = useState('pdf')
-  const fileInputRef = useRef(null)
-  const [description, setDescription] = useState('')
-  const navigate = useNavigate()
-  const [isUploaded, setIsUploaded] = useState(false);
+const Dashboard = () => {
+    const userState = useSelector((state) => state.user);
+    const { user, isAuthenticated, loading } = userState;
+    const navigate = useNavigate();
+    const [selectedResume, setSelectedResume] = useState(null);
 
-  const redirectToHome = () => {
-    navigate('/')
-  }
+    const cloudName = "dklot0q6w"; // Your actual Cloudinary cloud name
 
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]
-    setFile(selectedFile)
-    toast.success(`📄 File "${selectedFile.name}" selected`)
-  }
-
-  // const handleUpload = () => {
-  //   if (file) {
-  //     toast.success(`✅ File "${file.name}" uploaded successfully!`)
-  //   }
-  // }
-  const handleUpload = async () => {
-    if (!file || !description.trim()) {
-      toast.error('Please select a file and enter a job description')
-      return
+    if (!isAuthenticated) {
+        navigate("/login");
     }
-    const formData = new FormData()
-    formData.append('resume', file)
-    formData.append('jobDescription', description)
-  
-    try {
-      const response = await axios.post('http://localhost:8000/api/v1/analyze/resume', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        withCredentials: true 
-      })
 
-      if (response.data.success) {
-        setIsUploaded(true);
-      }
-  
-      toast.success(`${response.data.message}`)
-    } catch (error) {
-      console.error('Upload error:', error)
-      toast.error('Failed to upload file')
+    if (loading || !user) {
+        return <div>Loading...</div>;
     }
-  }
 
-  const handleRemoveFile = () => {
-    toast.error(`File "${file.name}" removed.`)
-    setFile(null)
-    if (fileInputRef.current) {
-      fileInputRef.current.value = null
-    }
-  }
+    const handleCardClick = (resume) => {
+        setSelectedResume(resume);
+    };
 
-  const handleGenerate = async () => {
-    navigate('/result')
-  }
+    const closeSidebar = () => {
+        setSelectedResume(null);
+    };
 
-  return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-800 to-purple-800 text-white">
-      <Toaster position="top-center" reverseOrder={false} />
+    const getPreviewUrl = (fileUrl) => {
+        return `https://res.cloudinary.com/${cloudName}/image/upload/w_1200,c_fit,fl_attachment/${fileUrl}.jpg`;
+    };
 
-      <header className="flex justify-between items-center px-6 py-4 bg-white text-black shadow-md">
-        <h1 className="text-3xl font-extrabold text-blue-800 cursor-pointer" onClick={redirectToHome}>Res-You-Me</h1>
-      </header>
+    // Helper function to clean text
+    const cleanText = (text) => {
+        if (!text) return "";
+        const lines = text
+            .replace(/\*\*/g, '')
+            .replace(/\*/g, '')
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line => line.length > 0);
+
+        return lines.map(line => `• ${line}`).join('\n\n');
+    };
+
+    return (
+        <div className="flex min-h-screen bg-gray-100 relative">
+            {/* Main Content Area */}
+            <div className="flex-1 flex flex-col">
+                {/* Header */}
+                <Header user={user} />
 
 
-      <div className="flex flex-col items-center justify-center flex-grow px-6 text-center">
-      <h2 className="text-4xl font-extrabold mb-4">Job Description</h2>
-      <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Paste job description here..."
-          className="w-full max-w-xl bg-white text-black p-4 rounded-md shadow-md mb-4"
-          rows={6}
-      />
+                {/* Content */}
+                <div className="px-4 sm:px-6 md:px-8 mt-24 max-w-7xl mx-auto w-full mb-10">
+                <h3 className="text-3xl font-bold mb-5">Welcome <span className=' text-purple-600'>{user?.name}</span>,</h3>
+                    <h3 className="text-xl font-semibold mb-6">Old Resumes</h3>
 
-
-
-        <h2 className="text-4xl font-extrabold mb-4">Upload Your Resume</h2>
-        <p className="text-lg text-white/80 mb-6">Choose the file type you'd like to upload:</p>
-
-        <div className="flex items-center gap-4 mb-6">
-          {/* <button
-            onClick={() => setFileType('pdf')}
-            className={`px-6 py-2 rounded-lg font-semibold transition ${
-              fileType === 'pdf' ? 'bg-white text-blue-800' : 'bg-blue-700 hover:bg-blue-600'
-            }`}
-          >
-            PDF
-          </button>
-          <button
-            onClick={() => setFileType('doc')}
-            className={`px-6 py-2 rounded-lg font-semibold transition ${
-              fileType === 'doc' ? 'bg-white text-blue-800' : 'bg-blue-700 hover:bg-blue-600'
-            }`}
-          >
-            DOC / DOCX
-          </button> */}
-
-          
-        </div>
-
-        <div className="flex items-center gap-4 mb-4">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept={fileType === 'pdf' ? '.pdf' : '.doc,.docx'}
-            onChange={handleFileChange}
-            className="bg-white text-black px-4 py-2 rounded-md cursor-pointer shadow-md hover:bg-gray-100 transition"
-          />
-          {file && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {/* Dynamically load resumes */}
+                        {user?.resumes?.length > 0 ? (
+                            user?.resumes?.map((resume, index) => (
+                                <div
+                                    key={index}
+                                    className="border rounded-lg p-3 hover:shadow-md cursor-pointer w-full"
+                                    onClick={() => handleCardClick(resume)}
+                                >
+                                    <img
+                                        src={getPreviewUrl(resume.fileid)}
+                                        alt={`Resume Preview ${index + 1}`}
+                                        className="w-full aspect-[8/11] object-cover mb-5 rounded"
+                                    />
+                                    <div className="text-center">
+                                        <p className="text-sm font-semibold">{`Resume ${index + 1}`}</p>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="col-span-full border-4 border-dotted rounded-lg p-8 text-center bg-gray-50 text-gray-800">
+            <p className="text-xl font-semibold mb-4">No Resumes Found</p>
+            <p className="mb-6 text-lg">It looks like you don’t have any resumes uploaded yet.</p>
             <button
-              onClick={handleRemoveFile}
-              className="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition"
+                onClick={() => navigate('/upload')}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition"
             >
-              <X size={16} /> Remove File
+                Create New Resume
             </button>
-          )}
         </div>
+                        )}
+                    </div>
 
-        {file && (
-          <div className="mt-2 bg-white text-black px-4 py-2 rounded-md shadow-md max-w-xs w-full truncate text-sm font-medium">
-            {file.name}
-          </div>
-        )}
+                </div>
+            </div>
 
-        <button
-          onClick={handleUpload}
-          disabled={!file}
-          className={`mt-6 px-6 py-2 rounded-md font-semibold transition ${
-            file ? 'bg-green-500 hover:bg-green-400 text-white' : 'bg-gray-400 text-white cursor-not-allowed'
-          }`}
-        >
-          Upload Resume 
-        </button>
-        {isUploaded && (
-          <button
-            onClick={handleGenerate}
-            disabled={!file}
-            className={`mt-6 px-6 py-2 rounded-md font-semibold transition ${
-              file ? 'bg-green-500 hover:bg-green-400 text-white' : 'bg-gray-400 text-white cursor-not-allowed'
-            }`}
-          >
-            Generate Resume Analysis using AI
-          </button>
-        )}
-      </div>
-    </div>
-  )
-}
+            {/* Sidebar Drawer for Resume Details */}
+            {selectedResume && (
+                <div className="fixed top-0 right-0 w-full md:w-1/2 bg-white shadow-lg h-full overflow-y-scroll transition-all duration-300 z-50">
+                    {/* Fixed Header */}
+                    <div className="sticky top-0 left-0 w-full bg-white shadow-lg z-50">
+                        <div className="flex justify-between items-center p-5 border-b">
+                            <h3 className="text-xl font-bold text-purple-600">Resume Details</h3>
+                            <button onClick={closeSidebar} className="text-gray-600 hover:text-gray-900">
+                                <FaTimes size={24} />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Content below the fixed header */}
+                    <div className="p-5 space-y-8 overflow-y-auto mt-0">
+
+                        {/* Job Description */}
+                        {selectedResume.jobDescription && (
+                            <div>
+                                <h4 className="text-lg font-semibold mb-2 text-purple-700">Job Description</h4>
+                                <p className="text-gray-700 whitespace-pre-line">{cleanText(selectedResume.jobDescription)}</p>
+                            </div>
+                        )}
+
+                        {/* Resume Image */}
+                        {selectedResume.fileid && (
+                            <div>
+                                <h4 className="text-lg font-semibold mb-2 text-purple-700">Resume</h4>
+                                <img
+                                    src={getPreviewUrl(selectedResume.fileid)}
+                                    alt="Resume Preview"
+                                    className="w-full aspect-[8/11] object-cover mb-4 rounded"
+                                />
+
+                                {/* 🌟 Added Download Button here */}
+                                <a
+                                    href={`https://res.cloudinary.com/${cloudName}/image/upload/${selectedResume.fileid}`}
+                                    download={`Resume_${selectedResume.fileid}.pdf`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-block bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition mt-4"
+                                >
+                                    Download Resume
+                                </a>
+                            </div>
+                        )}
+
+                        {/* Education */}
+                        {selectedResume.education && (
+                            <div>
+                                <h4 className="text-lg font-semibold mb-2 text-purple-700">Education</h4>
+                                <p className="text-gray-700 whitespace-pre-line">{cleanText(selectedResume.education)}</p>
+                            </div>
+                        )}
+
+                        {/* Experience */}
+                        {selectedResume.experience && (
+                            <div>
+                                <h4 className="text-lg font-semibold mb-2 text-purple-700">Experience</h4>
+                                <p className="text-gray-700 whitespace-pre-line">{cleanText(selectedResume.experience)}</p>
+                            </div>
+                        )}
+
+                        {/* Skills */}
+                        {selectedResume.skills && (
+                            <div>
+                                <h4 className="text-lg font-semibold mb-2 text-purple-700">Skills</h4>
+                                <p className="text-gray-700 whitespace-pre-line">{cleanText(selectedResume.skills)}</p>
+                            </div>
+                        )}
+
+                        {/* Projects */}
+                        {selectedResume.projects && (
+                            <div>
+                                <h4 className="text-lg font-semibold mb-2 text-purple-700">Projects</h4>
+                                <p className="text-gray-700 whitespace-pre-line">{cleanText(selectedResume.projects)}</p>
+                            </div>
+                        )}
+
+                        {/* Achievements */}
+                        {selectedResume.achievements && (
+                            <div>
+                                <h4 className="text-lg font-semibold mb-2 text-purple-700">Achievements</h4>
+                                <p className="text-gray-700 whitespace-pre-line">{cleanText(selectedResume.achievements)}</p>
+                            </div>
+                        )}
+
+                        {/* Certifications */}
+                        {selectedResume.certifications && (
+                            <div>
+                                <h4 className="text-lg font-semibold mb-2 text-purple-700">Certifications</h4>
+                                <p className="text-gray-700 whitespace-pre-line">{cleanText(selectedResume.certifications)}</p>
+                            </div>
+                        )}
+
+                        {/* Summary */}
+                        {selectedResume.summary && (
+                            <div>
+                                <h4 className="text-lg font-semibold mb-2 text-purple-700">Summary</h4>
+                                <p className="text-gray-700 whitespace-pre-line">{cleanText(selectedResume.summary)}</p>
+                            </div>
+                        )}
+
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default Dashboard;

@@ -8,21 +8,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loadUser } from '../redux/actions/user';
 
 const Login = () => {
-
-  
   const navigate = useNavigate();
-  const dispatch = useDispatch(); // Access redux dispatch
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const userState = useSelector((state) => state.user);
-  
   const { user, isAuthenticated, loading } = userState;
 
- 
-  
-
-  // if (isAuthenticated) {
-  //   navigate('/'); // Redirect to test page if already authenticated
-  // }
+  if (isAuthenticated) {
+    navigate('/'); // Redirect to homepage if already authenticated
+  }
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,16 +32,14 @@ const Login = () => {
         { withCredentials: true }
       );
 
-      // Store tokens in localStorage
       localStorage.setItem('accessToken', res.data.accessToken);
       localStorage.setItem('refreshToken', res.data.refreshToken);
       localStorage.setItem('user', JSON.stringify(res.data.user));
 
-      // Dispatch loadUser to update Redux state with logged-in user
       dispatch(loadUser());
 
       toast.success('✅ Login successful!');
-      navigate('/',1500); // Navigate to the test page after successful login
+      navigate('/', 1500);
     } catch (error) {
       console.error(error);
       toast.error('❌ Invalid login credentials');
@@ -57,18 +49,27 @@ const Login = () => {
   return (
     <>
       <ToastContainer position="top-center" />
-      <h1 className="text-3xl font-bold text-center mt-6 text-white">Resume Analyzer AI</h1>
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-        <div className="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md">
-          <h2 className="text-3xl font-bold mb-6 text-center">Sign In to Resume Analyzer</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
+      
+      {/* Light Dashboard style background */}
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-4">
+        
+        {/* Page title */}
+        <h1 className="text-4xl font-bold text-center text-purple-700 mb-10">
+          Resume Analyzer AI
+        </h1>
+
+        {/* White card */}
+        <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+          <h2 className="text-2xl font-bold mb-6 text-center text-purple-600">Sign In to Your Account</h2>
+          
+          <form onSubmit={handleSubmit} className="space-y-5">
             <input
               type="email"
               name="email"
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded-md bg-gray-100 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             />
             <input
@@ -77,16 +78,20 @@ const Login = () => {
               placeholder="Password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded-md bg-gray-100 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             />
-            <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded-md font-semibold transition">
+            <button
+              type="submit"
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-md font-semibold transition"
+            >
               Login
             </button>
           </form>
-          <p className="mt-4 text-sm text-center text-gray-400">
+
+          <p className="mt-6 text-sm text-center text-gray-500">
             Don’t have an account?{' '}
-            <Link to="/register" className="text-blue-400 underline hover:text-blue-300">
+            <Link to="/register" className="text-purple-600 font-medium hover:underline">
               Sign up
             </Link>
           </p>

@@ -92,7 +92,8 @@ Summary: ${latestResume.summary}
       return res.status(500).json({ message: "Failed to generate insights from Gemini API." });
     }
 
-    console.log("dhanush", insights.skillGapAnalysis);
+    console.log("======================================================================");
+    console.log("dhanush", insights.sectionWiseAnalysis);
 
     // Save the insights into the respective fields in resume
     latestResume.matchingScore = insights.matchingScore;
@@ -116,6 +117,7 @@ Summary: ${latestResume.summary}
     await user.save();
 
     res.status(200).json({
+      success: true,
       message: "Resume insights generated and saved successfully.",
       data: latestResume,
     });
