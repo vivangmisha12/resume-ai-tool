@@ -4,7 +4,7 @@ import store from "./store"; // <-- import your redux store
 import { logout } from "./actions/user"; // <-- your logout action
 
 const axiosInstance = axios.create({
-  baseURL: "http://18.204.106.61:8000/api/v1",
+  baseURL: "http://localhost:8000/api/v1",
   withCredentials: true,
 });
 
@@ -18,7 +18,7 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true; // avoid infinite loops
 
       try {
-        const refreshResponse = await axios.get("http://18.204.106.61:8000/api/v1/user/auth/refresh", {
+        const refreshResponse = await axios.get("http://localhost:8000/api/v1/user/auth/refresh", {
           withCredentials: true,
         });
 

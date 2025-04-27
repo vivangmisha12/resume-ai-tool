@@ -27,7 +27,7 @@ const Login = () => {
 
     try {
       const res = await axios.post(
-        'http://18.204.106.61:8000/api/v1/user/auth/login',
+        'http://localhost:8000/api/v1/user/auth/login',
         formData,
         { withCredentials: true }
       );

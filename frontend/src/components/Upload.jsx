@@ -35,7 +35,7 @@ export default function Upload() {
     formData.append('jobDescription', description);
 
     try {
-      const response = await axios.post('http://18.204.106.61:8000/api/v1/analyze/resume', formData, {
+      const response = await axios.post('http://localhost:8000/api/v1/analyze/resume', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -65,7 +65,7 @@ export default function Upload() {
 
   const handleGenerate = async () => {
     try {
-      const response = await axios.get('http://18.204.106.61:8000/api/v1/insights/generate-insights', {
+      const response = await axios.get('http://localhost:8000/api/v1/insights/generate-insights', {
         withCredentials: true
       });
   

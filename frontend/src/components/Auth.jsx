@@ -31,7 +31,7 @@ export default function Auth() {
       localStorage.setItem('token', 'signup-jwt-token')
       try{
 
-            const res = await axios.post('http://18.204.106.61:8000/api/v1/user/auth', {
+            const res = await axios.post('http://localhost:8000/api/v1/user/auth', {
                 name: formData.name,
                 email: formData.email,
                 password: formData.password
