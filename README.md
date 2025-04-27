@@ -61,12 +61,6 @@ npx tailwindcss init -p
 
 ---
 
-## 📷 Screenshots
-
-> _Add screenshots of Upload page, Dashboard, Analysis report page_
-
----
-
 ## ⚙️ Installation
 
 ### 1. Clone the Repository
