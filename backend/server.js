@@ -10,7 +10,7 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-    origin: 'http://localhost:5173', 
+    origin: ['http://localhost:5173', 'https://dhanushk-adya-ai.vercel.app'], 
     credentials: true, 
     methods: 'GET,POST,PUT,DELETE', 
   };
