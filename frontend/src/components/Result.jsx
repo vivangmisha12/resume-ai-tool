@@ -23,7 +23,7 @@ const Result = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('http://18.204.106.61:8000/api/v1/user/auth/me', { withCredentials: true });
+        const response = await axios.get('https://resumeanalyser-x87w.onrender.com/api/v1/user/auth/me', { withCredentials: true });
 
         if (response.data.success) {
           setUserData(response.data.data);
@@ -103,7 +103,7 @@ const Result = () => {
 
   const handleGenerate = async () => {
     try {
-      const response = await axios.get('http://18.204.106.61:8000/api/v1/insights/generate-insights', {
+      const response = await axios.get('https://resumeanalyser-x87w.onrender.com/api/v1/insights/generate-insights', {
         withCredentials: true
       });
   

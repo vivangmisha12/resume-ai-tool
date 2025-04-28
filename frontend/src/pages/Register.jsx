@@ -35,7 +35,7 @@ const Register = () => {
     }
 
     try {
-      const res = await axios.post('http://18.204.106.61:8000/api/v1/user/auth/register', formData);
+      const res = await axios.post('https://resumeanalyser-x87w.onrender.com/api/v1/user/auth/register', formData);
       toast.success('✅ Signup successful!');
       setTimeout(() => navigate('/login'), 1000);
     } catch (error) {
